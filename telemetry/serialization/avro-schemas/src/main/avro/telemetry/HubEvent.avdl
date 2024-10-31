@@ -31,7 +31,6 @@ protocol HubEventProtocol {
 		SET_VALUE
 	}
 
-	///////////***//////////////
 	record DeviceAddedEventAvro {
 		string id;
 		DeviceTypeAvro type;
