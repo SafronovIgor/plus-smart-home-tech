@@ -1,5 +1,6 @@
 package ru.yandex.practicum.telemetry.collector;
 
+import jakarta.annotation.PreDestroy;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,10 +19,10 @@ import ru.yandex.practicum.telemetry.collector.configuration.KafkaConfig;
 @Setter
 @ToString
 @Component
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class KafkaEventProducer {
-    final KafkaProducer<String, SpecificRecordBase> producer;
-    final KafkaConfig config;
+    KafkaProducer<String, SpecificRecordBase> producer;
+    KafkaConfig config;
 
     @Autowired
     public KafkaEventProducer(KafkaConfig kafkaConfig) {
@@ -32,11 +33,17 @@ public class KafkaEventProducer {
     public void sendRecord(ProducerRecord<String, SpecificRecordBase> producerRecord) {
         producer.send(producerRecord, (metadata, exception) -> {
             if (exception != null) {
-                log.error("Error sending producerRecord with key={} and value={}", producerRecord.key(), producerRecord.value(), exception);
+                log.error("Error sending producerRecord with key={} and value={}",
+                        producerRecord.key(), producerRecord.value(), exception);
             } else {
                 log.info("Sent producerRecord(key={} value={}) to partition={} with offset={}",
                         producerRecord.key(), producerRecord.value(), metadata.partition(), metadata.offset());
             }
         });
+    }
+
+    @PreDestroy
+    public void close() {
+        producer.close();
     }
 }

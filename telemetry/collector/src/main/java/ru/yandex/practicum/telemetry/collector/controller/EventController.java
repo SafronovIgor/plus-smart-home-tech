@@ -37,7 +37,6 @@ public class EventController {
                 .collect(Collectors.toMap(SensorService::getMessageType, Function.identity()));
     }
 
-
     @PostMapping("/sensors")
     public void addSensorEvent(@Valid @RequestBody SensorEvent sensorEvent) {
         if (sensorEventHandlerMap.containsKey(sensorEvent.getType())) {
