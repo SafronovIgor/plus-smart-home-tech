@@ -29,13 +29,13 @@ public class KafkaEventProducer {
         this.producer = new KafkaProducer<>(kafkaConfig.getProducerProperties());
     }
 
-    public void sendRecord(ProducerRecord<String, SpecificRecordBase> record) {
-        producer.send(record, (metadata, exception) -> {
+    public void sendRecord(ProducerRecord<String, SpecificRecordBase> producerRecord) {
+        producer.send(producerRecord, (metadata, exception) -> {
             if (exception != null) {
-                log.error("Error sending record with key={} and value={}", record.key(), record.value(), exception);
+                log.error("Error sending producerRecord with key={} and value={}", producerRecord.key(), producerRecord.value(), exception);
             } else {
-                log.info("Sent record(key={} value={}) to partition={} with offset={}",
-                        record.key(), record.value(), metadata.partition(), metadata.offset());
+                log.info("Sent producerRecord(key={} value={}) to partition={} with offset={}",
+                        producerRecord.key(), producerRecord.value(), metadata.partition(), metadata.offset());
             }
         });
     }

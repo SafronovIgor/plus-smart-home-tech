@@ -25,7 +25,7 @@ public class ScenarioAdded extends BaseHub {
     }
 
     @Override
-    ScenarioAddedEventAvro toAvro(HubEvent hubEvent) {
+    public ScenarioAddedEventAvro toAvro(HubEvent hubEvent) {
         var addedScenarioEvent = (ScenarioAddedEvent) hubEvent;
         var actionAvroList = addedScenarioEvent.getActions().stream()
                 .map(this::toDeviceActionAvro)

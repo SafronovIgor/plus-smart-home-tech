@@ -22,7 +22,7 @@ public class MotionEvent extends BaseSensor {
     }
 
     @Override
-    MotionSensorAvro toAvro(SensorEvent sensorEvent) {
+    public MotionSensorAvro toAvro(SensorEvent sensorEvent) {
         var motionEvent = (MotionSensorEvent) sensorEvent;
 
         return MotionSensorAvro.newBuilder()

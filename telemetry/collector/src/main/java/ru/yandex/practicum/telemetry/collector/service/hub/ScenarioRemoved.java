@@ -21,7 +21,7 @@ public class ScenarioRemoved extends BaseHub {
 
 
     @Override
-    ScenarioRemovedEventAvro toAvro(HubEvent hubEvent) {
+    public ScenarioRemovedEventAvro toAvro(HubEvent hubEvent) {
         var event = (ScenarioRemovedEvent) hubEvent;
 
         return ScenarioRemovedEventAvro.newBuilder()

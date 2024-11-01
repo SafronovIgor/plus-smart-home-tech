@@ -22,7 +22,7 @@ public class SwitchEvent extends BaseSensor {
     }
 
     @Override
-    SwitchSensorAvro toAvro(SensorEvent sensorEvent) {
+    public SwitchSensorAvro toAvro(SensorEvent sensorEvent) {
         var switchEvent = (SwitchSensorEvent) sensorEvent;
 
         return SwitchSensorAvro.newBuilder()

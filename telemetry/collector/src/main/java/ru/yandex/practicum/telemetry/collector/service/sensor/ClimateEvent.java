@@ -21,7 +21,7 @@ public class ClimateEvent extends BaseSensor {
         return SensorEventType.CLIMATE_SENSOR_EVENT;
     }
 
-    ClimateSensorAvro toAvro(SensorEvent sensorEvent) {
+    public ClimateSensorAvro toAvro(SensorEvent sensorEvent) {
         var climateEvent = (ClimateSensorEvent) sensorEvent;
 
         return ClimateSensorAvro.newBuilder()

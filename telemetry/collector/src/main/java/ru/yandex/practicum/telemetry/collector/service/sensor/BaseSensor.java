@@ -11,23 +11,22 @@ public abstract class BaseSensor implements SensorService {
     String topic;
 
     @Autowired
-    public BaseSensor(KafkaEventProducer kafkaProducer) {
+    protected BaseSensor(KafkaEventProducer kafkaProducer) {
         this.producer = kafkaProducer;
         topic = kafkaProducer.getConfig().getTopics().get("sensors-events");
     }
 
     @Override
     public void handle(SensorEvent sensorEvent) {
-        var record = new ProducerRecord<>(
+        var producerRecord = new ProducerRecord<>(
                 topic,
                 null,
                 System.currentTimeMillis(),
                 sensorEvent.getHubId(),
                 toAvro(sensorEvent)
         );
-        producer.sendRecord(record);
+        producer.sendRecord(producerRecord);
     }
 
     abstract SpecificRecordBase toAvro(SensorEvent sensorEvent);
-
 }

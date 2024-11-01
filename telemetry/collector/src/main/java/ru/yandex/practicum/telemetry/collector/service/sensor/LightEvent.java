@@ -22,7 +22,7 @@ public class LightEvent extends BaseSensor {
     }
 
     @Override
-    LigntSensorAvro toAvro(SensorEvent sensorEvent) {
+    public LigntSensorAvro toAvro(SensorEvent sensorEvent) {
         var lightEvent = (LightSensorEvent) sensorEvent;
 
         return LigntSensorAvro.newBuilder()

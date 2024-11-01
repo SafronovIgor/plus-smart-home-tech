@@ -7,23 +7,23 @@ import ru.yandex.practicum.telemetry.collector.model.hub.HubEvent;
 
 public abstract class BaseHub implements HubService {
     KafkaEventProducer producer;
-    String topic;
+    String eventTopic;
 
-    public BaseHub(KafkaEventProducer kafkaProducer) {
+    protected BaseHub(KafkaEventProducer kafkaProducer) {
         this.producer = kafkaProducer;
-        this.topic = kafkaProducer.getConfig().getTopics().get("hubs-events");
+        this.eventTopic = kafkaProducer.getConfig().getTopics().get("hubs-events");
     }
 
     @Override
     public void handle(HubEvent hubEvent) {
-        var record = new ProducerRecord<>(
-                topic,
+        var producerRecord = new ProducerRecord<>(
+                eventTopic,
                 null,
                 System.currentTimeMillis(),
                 hubEvent.getHubId(),
                 toAvro(hubEvent)
         );
-        producer.sendRecord(record);
+        producer.sendRecord(producerRecord);
     }
 
     abstract SpecificRecordBase toAvro(HubEvent hubEvent);

@@ -21,7 +21,7 @@ public class DeviceRemoved extends BaseHub {
     }
 
     @Override
-    DeviceRemovedEventAvro toAvro(HubEvent hubEvent) {
+    public DeviceRemovedEventAvro toAvro(HubEvent hubEvent) {
         var addedDeviceEvent = (DeviceAddedEvent) hubEvent;
 
         return DeviceRemovedEventAvro.newBuilder()

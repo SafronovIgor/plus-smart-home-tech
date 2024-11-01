@@ -22,7 +22,7 @@ public class TemperatureEvent extends BaseSensor {
     }
 
     @Override
-    TemparatureSensorAvro toAvro(SensorEvent sensorEvent) {
+    public TemparatureSensorAvro toAvro(SensorEvent sensorEvent) {
         var temperatureEvent = (TemperatureSensorEvent) sensorEvent;
 
         return TemparatureSensorAvro.newBuilder()
