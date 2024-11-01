@@ -25,7 +25,7 @@ public class DeviceAdded extends BaseHub {
 
     @Override
     DeviceAddedEventAvro toAvro(HubEvent hubEvent) {
-        DeviceAddedEvent addedDeviceEvent = (DeviceAddedEvent) hubEvent;
+        var addedDeviceEvent = (DeviceAddedEvent) hubEvent;
 
         return DeviceAddedEventAvro.newBuilder()
                 .setId(addedDeviceEvent.getId())
