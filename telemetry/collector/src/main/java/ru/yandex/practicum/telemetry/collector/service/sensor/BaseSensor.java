@@ -1,11 +1,16 @@
 package ru.yandex.practicum.telemetry.collector.service.sensor;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.experimental.FieldDefaults;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.yandex.practicum.telemetry.collector.KafkaEventProducer;
 import ru.yandex.practicum.telemetry.collector.model.sensor.SensorEvent;
 
+@Getter
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public abstract class BaseSensor implements SensorService {
     KafkaEventProducer producer;
     String topic;
@@ -28,5 +33,5 @@ public abstract class BaseSensor implements SensorService {
         producer.sendRecord(producerRecord);
     }
 
-    abstract SpecificRecordBase toAvro(SensorEvent sensorEvent);
+    protected abstract SpecificRecordBase toAvro(SensorEvent sensorEvent);
 }

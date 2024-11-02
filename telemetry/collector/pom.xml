@@ -11,6 +11,10 @@
 
     <artifactId>collector</artifactId>
 
+    <properties>
+        <checker.qual.version>3.42.0</checker.qual.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>ru.yandex.practicum</groupId>
@@ -38,10 +42,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.checkerframework</groupId>
             <artifactId>checker-qual</artifactId>
-            <version>3.42.0</version>
+            <version>${checker.qual.version}</version>
             <scope>compile</scope>
         </dependency>
 
