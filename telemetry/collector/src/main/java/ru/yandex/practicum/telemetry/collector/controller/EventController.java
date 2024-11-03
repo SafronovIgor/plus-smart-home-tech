@@ -29,8 +29,7 @@ public class EventController {
     private final Map<SensorEventType, SensorService> sensorEventHandlerMap;
 
     @Autowired
-    public EventController(Set<HubService> hubEventHandler,
-                           Set<SensorService> sensorEventHandler) {
+    public EventController(Set<HubService> hubEventHandler, Set<SensorService> sensorEventHandler) {
         this.hubEventHandlerMap = hubEventHandler.stream()
                 .collect(Collectors.toMap(HubService::getMessageType, Function.identity()));
         this.sensorEventHandlerMap = sensorEventHandler.stream()

@@ -7,7 +7,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.yandex.practicum.telemetry.collector.configuration.ConstantsConfig;
 import ru.yandex.practicum.telemetry.collector.model.ErrorAPI;
 
 import java.util.HashMap;
@@ -20,15 +19,15 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 @RestControllerAdvice
 @RequiredArgsConstructor
 public class ErrorHandler {
-    private final ConstantsConfig constantsConfig;
     private static final String VALIDATION_ERROR_MESSAGE = "Validation error: {}";
+    private static final String DEFAULT_ERROR_NAME = "Unknown error, please report this issue.";
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(INTERNAL_SERVER_ERROR)
     public ErrorAPI handleException(final Exception e) {
         log.warn("Unknown error.", e);
         return ErrorAPI.builder()
-                .error(constantsConfig.getDefaultErrorName())
+                .error(DEFAULT_ERROR_NAME)
                 .description(e.getMessage())
                 .build();
     }
