@@ -35,7 +35,6 @@ public class EventController extends CollectorControllerGrpc.CollectorController
     @Override
     public void collectHubEvent(HubEventProto request, StreamObserver<Empty> responseObserver) {
         try {
-            log.info("Received Hub event: {}", request);
             hubEventHandlerMap.get(request.getPayloadCase()).handle(request);
             responseObserver.onNext(Empty.getDefaultInstance());
             responseObserver.onCompleted();
@@ -51,7 +50,6 @@ public class EventController extends CollectorControllerGrpc.CollectorController
     @Override
     public void collectSensorEvent(SensorEventProto request, StreamObserver<Empty> responseObserver) {
         try {
-            log.info("Received Sensor event: {}", request);
             sensorEventHandlerMap.get(request.getPayloadCase()).handle(request);
             responseObserver.onNext(Empty.getDefaultInstance());
             responseObserver.onCompleted();

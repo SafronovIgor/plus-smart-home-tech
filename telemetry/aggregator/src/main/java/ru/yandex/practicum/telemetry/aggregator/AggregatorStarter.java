@@ -43,6 +43,7 @@ public class AggregatorStarter {
                 var records = consumer.poll(Duration.ofSeconds(5));
                 for (ConsumerRecord<String, SensorEventAvro> rec : records) {
                     var event = rec.value();
+                    log.info("Received event: {}", event);
                     var updateSnapshot = updateState(event);
                     updateSnapshot.ifPresent(this::sendSnapshot);
                 }

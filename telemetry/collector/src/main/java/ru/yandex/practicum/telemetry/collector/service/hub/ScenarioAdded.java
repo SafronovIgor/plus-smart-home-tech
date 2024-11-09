@@ -5,6 +5,8 @@ import ru.yandex.practicum.grpc.telemetry.event.*;
 import ru.yandex.practicum.kafka.telemetry.event.*;
 import ru.yandex.practicum.telemetry.collector.KafkaEventProducer;
 
+import java.time.Instant;
+
 @Service
 public class ScenarioAdded extends BaseHub {
 
@@ -18,7 +20,7 @@ public class ScenarioAdded extends BaseHub {
     }
 
     @Override
-    public ScenarioAddedEventAvro toAvro(HubEventProto hubEvent) {
+    public HubEventAvro toAvro(HubEventProto hubEvent) {
         var addedScenarioEvent = hubEvent.getScenarioAdded();
         var actionAvroList = addedScenarioEvent.getActionList().stream()
                 .map(this::toDeviceActionAvro)
@@ -26,10 +28,14 @@ public class ScenarioAdded extends BaseHub {
         var scenarioConditionAvroList = addedScenarioEvent.getConditionList().stream()
                 .map(this::toScenarioConditionAvro)
                 .toList();
-        return ScenarioAddedEventAvro.newBuilder()
-                .setName(addedScenarioEvent.getName())
-                .setAction(actionAvroList)
-                .setConditions(scenarioConditionAvroList)
+        return HubEventAvro.newBuilder()
+                .setHubId(hubEvent.getHubId())
+                .setTimestamp(Instant.ofEpochSecond(hubEvent.getTimestamp().getSeconds()))
+                .setPayload(ScenarioAddedEventAvro.newBuilder()
+                        .setName(addedScenarioEvent.getName())
+                        .setAction(actionAvroList)
+                        .setConditions(scenarioConditionAvroList)
+                        .build())
                 .build();
     }
 
