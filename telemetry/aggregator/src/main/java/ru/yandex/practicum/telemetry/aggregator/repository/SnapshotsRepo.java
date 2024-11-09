@@ -1,4 +1,4 @@
-package ru.yandex.practicum.repository;
+package ru.yandex.practicum.telemetry.aggregator.repository;
 
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.kafka.telemetry.event.SensorsSnapshotAvro;

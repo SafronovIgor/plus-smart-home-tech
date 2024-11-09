@@ -44,7 +44,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>ru.yandex.practicum.Aggregator</mainClass>
+                    <mainClass>ru.yandex.practicum.telemetry.aggregator.Aggregator</mainClass>
                 </configuration>
             </plugin>
         </plugins>

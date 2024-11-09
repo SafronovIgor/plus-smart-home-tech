@@ -1,4 +1,4 @@
-package ru.yandex.practicum;
+package ru.yandex.practicum.telemetry.aggregator;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -8,10 +8,10 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.errors.WakeupException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.configuration.KafkaConfig;
 import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.SensorsSnapshotAvro;
-import ru.yandex.practicum.service.SensorsSnapshotService;
+import ru.yandex.practicum.telemetry.aggregator.configuration.KafkaConfig;
+import ru.yandex.practicum.telemetry.aggregator.service.SensorsSnapshotService;
 
 import java.time.Duration;
 import java.time.Instant;

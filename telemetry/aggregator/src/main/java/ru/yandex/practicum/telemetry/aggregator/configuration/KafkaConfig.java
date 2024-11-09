@@ -1,4 +1,4 @@
-package ru.yandex.practicum.configuration;
+package ru.yandex.practicum.telemetry.aggregator.configuration;
 
 import lombok.AccessLevel;
 import lombok.Getter;
