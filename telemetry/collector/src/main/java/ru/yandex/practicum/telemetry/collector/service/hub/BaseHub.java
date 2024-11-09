@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import ru.yandex.practicum.grpc.telemetry.event.HubEventProto;
 import ru.yandex.practicum.telemetry.collector.KafkaEventProducer;
-import ru.yandex.practicum.telemetry.collector.model.hub.HubEvent;
 
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -20,7 +20,7 @@ public abstract class BaseHub implements HubService {
     }
 
     @Override
-    public void handle(HubEvent hubEvent) {
+    public void handle(HubEventProto hubEvent) {
         var producerRecord = new ProducerRecord<>(
                 eventTopic,
                 null,
@@ -31,5 +31,5 @@ public abstract class BaseHub implements HubService {
         producer.sendRecord(producerRecord);
     }
 
-    protected abstract SpecificRecordBase toAvro(HubEvent hubEvent);
+    protected abstract SpecificRecordBase toAvro(HubEventProto hubEvent);
 }

@@ -6,8 +6,8 @@ import lombok.experimental.FieldDefaults;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
+import ru.yandex.practicum.grpc.telemetry.event.SensorEventProto;
 import ru.yandex.practicum.telemetry.collector.KafkaEventProducer;
-import ru.yandex.practicum.telemetry.collector.model.sensor.SensorEvent;
 
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -22,7 +22,7 @@ public abstract class BaseSensor implements SensorService {
     }
 
     @Override
-    public void handle(SensorEvent sensorEvent) {
+    public void handle(SensorEventProto sensorEvent) {
         var producerRecord = new ProducerRecord<>(
                 topic,
                 null,
@@ -33,5 +33,5 @@ public abstract class BaseSensor implements SensorService {
         producer.sendRecord(producerRecord);
     }
 
-    protected abstract SpecificRecordBase toAvro(SensorEvent sensorEvent);
+    protected abstract SpecificRecordBase toAvro(SensorEventProto sensorEvent);
 }
