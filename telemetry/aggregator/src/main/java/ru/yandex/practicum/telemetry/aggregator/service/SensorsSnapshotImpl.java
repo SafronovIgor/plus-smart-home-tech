@@ -42,7 +42,7 @@ public class SensorsSnapshotImpl implements SensorsSnapshotService {
             sensorStateAvro.setTimestamp(event.getTimestamp());
             sensorStateAvro.setData(event);
             state.put(event.getId(), sensorStateAvro);
-            return Optional.of(snapshotsRepository.update(event.getHubId(),
+            return Optional.ofNullable(snapshotsRepository.update(event.getHubId(),
                     SensorsSnapshotAvro.newBuilder()
                             .setHubId(event.getHubId())
                             .setTimestamp(Instant.now())

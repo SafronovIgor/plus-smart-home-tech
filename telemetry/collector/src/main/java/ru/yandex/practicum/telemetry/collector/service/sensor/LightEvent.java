@@ -4,7 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.grpc.telemetry.event.SensorEventProto;
 import ru.yandex.practicum.kafka.telemetry.event.LigntSensorAvro;
+import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
 import ru.yandex.practicum.telemetry.collector.KafkaEventProducer;
+
+import java.time.Instant;
 
 @Service
 public class LightEvent extends BaseSensor {
@@ -20,11 +23,16 @@ public class LightEvent extends BaseSensor {
     }
 
     @Override
-    public LigntSensorAvro toAvro(SensorEventProto sensorEvent) {
+    public SensorEventAvro toAvro(SensorEventProto sensorEvent) {
         var lightEvent = sensorEvent.getLightSensorEvent();
-        return LigntSensorAvro.newBuilder()
-                .setLinkQuality(lightEvent.getLinkQuality())
-                .setLuminosity(lightEvent.getLuminosity())
+        return SensorEventAvro.newBuilder()
+                .setId(sensorEvent.getId())
+                .setHubId(sensorEvent.getHubId())
+                .setTimestamp(Instant.ofEpochSecond(sensorEvent.getTimestamp().getSeconds()))
+                .setPayload(LigntSensorAvro.newBuilder()
+                        .setLinkQuality(lightEvent.getLinkQuality())
+                        .setLuminosity(lightEvent.getLuminosity())
+                        .build())
                 .build();
     }
 }

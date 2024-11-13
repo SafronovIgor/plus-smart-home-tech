@@ -6,7 +6,10 @@ import ru.yandex.practicum.grpc.telemetry.event.DeviceTypeProto;
 import ru.yandex.practicum.grpc.telemetry.event.HubEventProto;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceAddedEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceTypeAvro;
+import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
 import ru.yandex.practicum.telemetry.collector.KafkaEventProducer;
+
+import java.time.Instant;
 
 @Service
 public class DeviceAdded extends BaseHub {
@@ -22,11 +25,15 @@ public class DeviceAdded extends BaseHub {
     }
 
     @Override
-    public DeviceAddedEventAvro toAvro(HubEventProto hubEvent) {
+    public HubEventAvro toAvro(HubEventProto hubEvent) {
         var addedDeviceEvent = hubEvent.getDeviceAdded();
-        return DeviceAddedEventAvro.newBuilder()
-                .setId(addedDeviceEvent.getId())
-                .setType(toDeviceTypeAvro(addedDeviceEvent.getType()))
+        return HubEventAvro.newBuilder()
+                .setHubId(hubEvent.getHubId())
+                .setTimestamp(Instant.ofEpochSecond(hubEvent.getTimestamp().getSeconds()))
+                .setPayload(DeviceAddedEventAvro.newBuilder()
+                        .setId(addedDeviceEvent.getId())
+                        .setType(toDeviceTypeAvro(addedDeviceEvent.getType()))
+                        .build())
                 .build();
     }
 

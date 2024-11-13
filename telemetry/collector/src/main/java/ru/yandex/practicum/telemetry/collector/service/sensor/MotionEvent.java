@@ -4,7 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.grpc.telemetry.event.SensorEventProto;
 import ru.yandex.practicum.kafka.telemetry.event.MotionSensorAvro;
+import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
 import ru.yandex.practicum.telemetry.collector.KafkaEventProducer;
+
+import java.time.Instant;
 
 @Service
 public class MotionEvent extends BaseSensor {
@@ -20,12 +23,17 @@ public class MotionEvent extends BaseSensor {
     }
 
     @Override
-    public MotionSensorAvro toAvro(SensorEventProto sensorEvent) {
+    public SensorEventAvro toAvro(SensorEventProto sensorEvent) {
         var motionEvent = sensorEvent.getMotionSensorEvent();
-        return MotionSensorAvro.newBuilder()
-                .setMotion(motionEvent.getMotion())
-                .setLinkQuality(motionEvent.getLinkQuality())
-                .setVoltage(motionEvent.getVoltage())
+        return SensorEventAvro.newBuilder()
+                .setId(sensorEvent.getId())
+                .setHubId(sensorEvent.getHubId())
+                .setTimestamp(Instant.ofEpochSecond(sensorEvent.getTimestamp().getSeconds()))
+                .setPayload(MotionSensorAvro.newBuilder()
+                        .setMotion(motionEvent.getMotion())
+                        .setLinkQuality(motionEvent.getLinkQuality())
+                        .setVoltage(motionEvent.getVoltage())
+                        .build())
                 .build();
     }
 }

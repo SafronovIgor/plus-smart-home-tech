@@ -8,6 +8,7 @@ aggregator:
       "bootstrap.servers": localhost:9092
       "key.serializer": org.apache.kafka.common.serialization.StringSerializer
       "value.serializer": kafka.serializer.GeneralAvroSerializer
+
     consumer-properties:
       "bootstrap.servers": localhost:9092
       "group.id": aggregator-group
