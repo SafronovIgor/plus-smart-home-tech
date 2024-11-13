@@ -4,6 +4,8 @@ import com.google.protobuf.Empty;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +22,10 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @GrpcService
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class EventController extends CollectorControllerGrpc.CollectorControllerImplBase {
-    private final Map<HubEventProto.PayloadCase, HubService> hubEventHandlerMap;
-    private final Map<SensorEventProto.PayloadCase, SensorService> sensorEventHandlerMap;
+    Map<HubEventProto.PayloadCase, HubService> hubEventHandlerMap;
+    Map<SensorEventProto.PayloadCase, SensorService> sensorEventHandlerMap;
 
     @Autowired
     public EventController(Set<HubService> hubEventHandler, Set<SensorService> sensorEventHandler) {

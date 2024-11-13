@@ -1,6 +1,8 @@
 package ru.yandex.practicum.telemetry.aggregator.service;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -17,8 +19,9 @@ import java.util.Optional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SensorsSnapshotImpl implements SensorsSnapshotService {
-    private final SnapshotsRepo snapshotsRepository;
+    SnapshotsRepo snapshotsRepository;
 
     @Override
     public Optional<SensorsSnapshotAvro> updateState(SensorEventAvro event) {

@@ -2,6 +2,8 @@ package ru.yandex.practicum.telemetry.processor.hub;
 
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -15,8 +17,9 @@ import ru.yandex.practicum.telemetry.entity.Sensor;
 
 @Slf4j
 @Service
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class HubRouterProcessor {
-    private final HubRouterControllerGrpc.HubRouterControllerBlockingStub hubRouterClient;
+    HubRouterControllerGrpc.HubRouterControllerBlockingStub hubRouterClient;
 
     public HubRouterProcessor(@Value("${grpc.client.hub-router.address}") String target) {
         this.hubRouterClient = HubRouterControllerGrpc.newBlockingStub(ManagedChannelBuilder

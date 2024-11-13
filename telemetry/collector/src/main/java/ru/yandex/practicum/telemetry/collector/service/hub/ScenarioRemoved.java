@@ -1,5 +1,6 @@
 package ru.yandex.practicum.telemetry.collector.service.hub;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.grpc.telemetry.event.HubEventProto;
 import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
@@ -11,6 +12,7 @@ import java.time.Instant;
 @Service
 public class ScenarioRemoved extends BaseHub {
 
+    @Autowired
     public ScenarioRemoved(KafkaEventProducer kafkaEventProducer) {
         super(kafkaEventProducer);
     }

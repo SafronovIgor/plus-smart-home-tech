@@ -10,7 +10,7 @@ import ru.yandex.practicum.grpc.telemetry.event.SensorEventProto;
 import ru.yandex.practicum.telemetry.collector.KafkaEventProducer;
 
 @Getter
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public abstract class BaseSensor implements SensorService {
     KafkaEventProducer producer;
     String topic;

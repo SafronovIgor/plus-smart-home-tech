@@ -1,5 +1,7 @@
 package ru.yandex.practicum.telemetry.processor.hub.event;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -15,10 +17,11 @@ import java.util.List;
 
 @Slf4j
 @Component
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class HubEventProcessor implements Runnable {
-    private final KafkaConfig kafkaConfig;
-    private final KafkaConsumer<String, HubEventAvro> consumer;
-    private final CollectorHandler collectorHandler;
+    KafkaConfig kafkaConfig;
+    KafkaConsumer<String, HubEventAvro> consumer;
+    CollectorHandler collectorHandler;
 
     @Autowired
     public HubEventProcessor(KafkaConfig kafkaConfig, CollectorHandler collectorHandler) {

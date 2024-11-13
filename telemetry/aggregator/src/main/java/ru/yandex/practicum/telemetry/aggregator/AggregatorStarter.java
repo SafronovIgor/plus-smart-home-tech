@@ -1,5 +1,7 @@
 package ru.yandex.practicum.telemetry.aggregator;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -20,11 +22,12 @@ import java.util.Optional;
 
 @Slf4j
 @Component
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AggregatorStarter {
-    private final KafkaConfig kafkaConfig;
-    private final KafkaProducer<String, SensorsSnapshotAvro> producer;
-    private final KafkaConsumer<String, SensorEventAvro> consumer;
-    private final SensorsSnapshotService sensorsSnapshotService;
+    KafkaConfig kafkaConfig;
+    KafkaProducer<String, SensorsSnapshotAvro> producer;
+    KafkaConsumer<String, SensorEventAvro> consumer;
+    SensorsSnapshotService sensorsSnapshotService;
 
     @Autowired
     public AggregatorStarter(KafkaConfig kafkaConfig, SensorsSnapshotService sensorsSnapshotService) {
