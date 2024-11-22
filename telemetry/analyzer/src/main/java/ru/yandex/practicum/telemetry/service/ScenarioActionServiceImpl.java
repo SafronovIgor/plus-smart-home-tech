@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.telemetry.entity.Action;
 import ru.yandex.practicum.telemetry.entity.Scenario;
 import ru.yandex.practicum.telemetry.entity.ScenarioAction;
@@ -13,6 +14,7 @@ import ru.yandex.practicum.telemetry.repository.ScenarioActionRepository;
 import java.util.List;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ScenarioActionServiceImpl implements ScenarioActionService {

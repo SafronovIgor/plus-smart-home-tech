@@ -20,7 +20,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class SensorsSnapshotImpl implements SensorsSnapshotService {
+public class SensorsSnapshotServiceImpl implements SensorsSnapshotService {
     SnapshotsRepo snapshotsRepository;
 
     @Override
@@ -53,7 +53,6 @@ public class SensorsSnapshotImpl implements SensorsSnapshotService {
                             .build()));
         }
     }
-
 
     @Override
     public void sendSnapshot(ProducerRecord<String, SensorsSnapshotAvro> snapshotRecord,
