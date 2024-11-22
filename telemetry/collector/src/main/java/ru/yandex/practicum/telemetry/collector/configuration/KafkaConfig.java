@@ -1,8 +1,10 @@
 package ru.yandex.practicum.telemetry.collector.configuration;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.FieldDefaults;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +16,8 @@ import java.util.Properties;
 @ToString
 @Component
 @ConfigurationProperties("collector.kafka")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class KafkaConfig {
-    private Map<String, String> topics;
-    private Properties producerProperties;
+    Map<String, String> topics;
+    Properties producerProperties;
 }

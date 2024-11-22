@@ -2,10 +2,6 @@ spring:
   application:
     name: collector
 
-application:
-  constants:
-    defaultErrorName: "Unknown error, please report this issue."
-
 collector:
   kafka:
     producer-properties:

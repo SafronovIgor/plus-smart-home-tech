@@ -2,11 +2,12 @@ package ru.yandex.practicum.telemetry.collector.service.sensor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.grpc.telemetry.event.SensorEventProto;
 import ru.yandex.practicum.kafka.telemetry.event.MotionSensorAvro;
+import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
 import ru.yandex.practicum.telemetry.collector.KafkaEventProducer;
-import ru.yandex.practicum.telemetry.collector.model.sensor.MotionSensorEvent;
-import ru.yandex.practicum.telemetry.collector.model.sensor.SensorEvent;
-import ru.yandex.practicum.telemetry.collector.model.sensor.SensorEventType;
+
+import java.time.Instant;
 
 @Service
 public class MotionEvent extends BaseSensor {
@@ -17,18 +18,22 @@ public class MotionEvent extends BaseSensor {
     }
 
     @Override
-    public SensorEventType getMessageType() {
-        return SensorEventType.MOTION_SENSOR_EVENT;
+    public SensorEventProto.PayloadCase getMessageType() {
+        return SensorEventProto.PayloadCase.MOTION_SENSOR_EVENT;
     }
 
     @Override
-    public MotionSensorAvro toAvro(SensorEvent sensorEvent) {
-        var motionEvent = (MotionSensorEvent) sensorEvent;
-
-        return MotionSensorAvro.newBuilder()
-                .setMotion(motionEvent.isMotion())
-                .setLinkQuality(motionEvent.getLinkQuality())
-                .setVoltage(motionEvent.getVoltage())
+    public SensorEventAvro toAvro(SensorEventProto sensorEvent) {
+        var motionEvent = sensorEvent.getMotionSensorEvent();
+        return SensorEventAvro.newBuilder()
+                .setId(sensorEvent.getId())
+                .setHubId(sensorEvent.getHubId())
+                .setTimestamp(Instant.ofEpochSecond(sensorEvent.getTimestamp().getSeconds()))
+                .setPayload(MotionSensorAvro.newBuilder()
+                        .setMotion(motionEvent.getMotion())
+                        .setLinkQuality(motionEvent.getLinkQuality())
+                        .setVoltage(motionEvent.getVoltage())
+                        .build())
                 .build();
     }
 }

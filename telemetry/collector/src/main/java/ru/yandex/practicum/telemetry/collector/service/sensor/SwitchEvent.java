@@ -2,11 +2,12 @@ package ru.yandex.practicum.telemetry.collector.service.sensor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.grpc.telemetry.event.SensorEventProto;
+import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.SwitchSensorAvro;
 import ru.yandex.practicum.telemetry.collector.KafkaEventProducer;
-import ru.yandex.practicum.telemetry.collector.model.sensor.SensorEvent;
-import ru.yandex.practicum.telemetry.collector.model.sensor.SensorEventType;
-import ru.yandex.practicum.telemetry.collector.model.sensor.SwitchSensorEvent;
+
+import java.time.Instant;
 
 @Service
 public class SwitchEvent extends BaseSensor {
@@ -17,16 +18,20 @@ public class SwitchEvent extends BaseSensor {
     }
 
     @Override
-    public SensorEventType getMessageType() {
-        return SensorEventType.SWITCH_SENSOR_EVENT;
+    public SensorEventProto.PayloadCase getMessageType() {
+        return SensorEventProto.PayloadCase.SWITCH_SENSOR_EVENT;
     }
 
     @Override
-    public SwitchSensorAvro toAvro(SensorEvent sensorEvent) {
-        var switchEvent = (SwitchSensorEvent) sensorEvent;
-
-        return SwitchSensorAvro.newBuilder()
-                .setState(switchEvent.isState())
+    public SensorEventAvro toAvro(SensorEventProto sensorEvent) {
+        var switchEvent = sensorEvent.getSwitchSensorEvent();
+        return SensorEventAvro.newBuilder()
+                .setId(sensorEvent.getId())
+                .setHubId(sensorEvent.getHubId())
+                .setTimestamp(Instant.ofEpochSecond(sensorEvent.getTimestamp().getSeconds()))
+                .setPayload(SwitchSensorAvro.newBuilder()
+                        .setState(switchEvent.getState())
+                        .build())
                 .build();
     }
 }

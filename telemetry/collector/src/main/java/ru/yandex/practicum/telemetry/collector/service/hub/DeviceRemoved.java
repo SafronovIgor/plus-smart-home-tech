@@ -1,31 +1,37 @@
 package ru.yandex.practicum.telemetry.collector.service.hub;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.grpc.telemetry.event.HubEventProto;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceRemovedEventAvro;
+import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
 import ru.yandex.practicum.telemetry.collector.KafkaEventProducer;
-import ru.yandex.practicum.telemetry.collector.model.enums.HubEventType;
-import ru.yandex.practicum.telemetry.collector.model.hub.DeviceAddedEvent;
-import ru.yandex.practicum.telemetry.collector.model.hub.HubEvent;
+
+import java.time.Instant;
 
 @Service
 public class DeviceRemoved extends BaseHub {
 
+    @Autowired
     public DeviceRemoved(KafkaEventProducer kafkaEventProducer) {
         super(kafkaEventProducer);
     }
 
     @Override
-    public HubEventType getMessageType() {
-        return HubEventType.DEVICE_REMOVED;
+    public HubEventProto.PayloadCase getMessageType() {
+        return HubEventProto.PayloadCase.DEVICE_REMOVED;
     }
 
     @Override
-    public DeviceRemovedEventAvro toAvro(HubEvent hubEvent) {
-        var addedDeviceEvent = (DeviceAddedEvent) hubEvent;
-
-        return DeviceRemovedEventAvro.newBuilder()
-                .setId(addedDeviceEvent.getId())
+    public HubEventAvro toAvro(HubEventProto hubEvent) {
+        var addedDeviceEvent = hubEvent.getDeviceRemoved();
+        return HubEventAvro.newBuilder()
+                .setHubId(hubEvent.getHubId())
+                .setTimestamp(Instant.ofEpochSecond(hubEvent.getTimestamp().getSeconds()))
+                .setPayload(DeviceRemovedEventAvro.newBuilder()
+                        .setId(addedDeviceEvent.getId())
+                        .build())
                 .build();
     }
 }
