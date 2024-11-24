@@ -12,7 +12,8 @@
     <artifactId>infra</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>Config server</module>
+        <module>config server</module>
+        <module>eureka server</module>
     </modules>
 
 </project>

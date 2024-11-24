@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.SensorsSnapshotAvro;
 import ru.yandex.practicum.telemetry.aggregator.configuration.KafkaConfig;
-import ru.yandex.practicum.telemetry.aggregator.service.SensorsSnapshotService;
+import ru.yandex.practicum.telemetry.aggregator.service.AggregatorSensorsSnapshotService;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -27,14 +27,14 @@ public class AggregatorStarter {
     KafkaConfig kafkaConfig;
     KafkaProducer<String, SensorsSnapshotAvro> producer;
     KafkaConsumer<String, SensorEventAvro> consumer;
-    SensorsSnapshotService sensorsSnapshotService;
+    AggregatorSensorsSnapshotService aggregatorSensorsSnapshotService;
 
     @Autowired
-    public AggregatorStarter(KafkaConfig kafkaConfig, SensorsSnapshotService sensorsSnapshotService) {
+    public AggregatorStarter(KafkaConfig kafkaConfig, AggregatorSensorsSnapshotService aggregatorSensorsSnapshotService) {
         this.kafkaConfig = kafkaConfig;
         this.producer = new KafkaProducer<>(kafkaConfig.getProducerProperties());
         this.consumer = new KafkaConsumer<>(kafkaConfig.getConsumerProperties());
-        this.sensorsSnapshotService = sensorsSnapshotService;
+        this.aggregatorSensorsSnapshotService = aggregatorSensorsSnapshotService;
     }
 
     public void start() {
@@ -71,12 +71,12 @@ public class AggregatorStarter {
     }
 
     private Optional<SensorsSnapshotAvro> updateState(SensorEventAvro event) {
-        return sensorsSnapshotService.updateState(event);
+        return aggregatorSensorsSnapshotService.updateState(event);
     }
 
     private void sendSnapshot(SensorsSnapshotAvro snapshot) {
         log.debug("Sending snapshot: {}", snapshot);
-        sensorsSnapshotService.sendSnapshot(
+        aggregatorSensorsSnapshotService.sendSnapshot(
                 new ProducerRecord<>(
                         kafkaConfig.getTopics().get("sensors-snapshots"),
                         null,

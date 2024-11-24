@@ -41,3 +41,8 @@ analyzer: # Настройки анализатора
       "group.id": aggregator-group
       "key.deserializer": org.apache.kafka.common.serialization.StringDeserializer
       "value.deserializer": kafka.serializer.SensorEventDeserializer
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/

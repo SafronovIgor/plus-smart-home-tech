@@ -15,3 +15,8 @@ aggregator:
       sensors-events: telemetry.sensors.v1
       hubs-events: telemetry.hubs.v1
       sensors-snapshot: telemetry.snapshots.v1
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/

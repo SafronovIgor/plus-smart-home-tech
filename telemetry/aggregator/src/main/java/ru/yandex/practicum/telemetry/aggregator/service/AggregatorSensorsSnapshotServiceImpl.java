@@ -20,7 +20,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class SensorsSnapshotServiceImpl implements SensorsSnapshotService {
+public class AggregatorSensorsSnapshotServiceImpl implements AggregatorSensorsSnapshotService {
     SnapshotsRepo snapshotsRepository;
 
     @Override
