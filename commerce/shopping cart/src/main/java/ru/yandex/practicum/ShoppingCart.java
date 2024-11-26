@@ -5,14 +5,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
-import ru.yandex.practicum.feign.ShoppingStoreClient;
+import ru.yandex.practicum.feign.WarehouseClient;
+
 
 @SpringBootApplication
-@ConfigurationPropertiesScan
-@EnableFeignClients(clients = {ShoppingStoreClient.class})
 @EnableDiscoveryClient
-public class Warehouse {
+@ConfigurationPropertiesScan
+@EnableFeignClients(clients = {WarehouseClient.class})
+public class ShoppingCart {
     public static void main(String[] args) {
-        SpringApplication.run(Warehouse.class, args);
+        SpringApplication.run(ShoppingCart.class, args);
     }
 }

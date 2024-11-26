@@ -6,7 +6,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.kafka.telemetry.event.*;
 import ru.yandex.practicum.telemetry.entity.*;
-import ru.yandex.practicum.telemetry.processor.hub.HubRouterProcessor;
 import ru.yandex.practicum.telemetry.repository.ScenarioActionRepository;
 import ru.yandex.practicum.telemetry.repository.ScenarioConditionRepository;
 import ru.yandex.practicum.telemetry.repository.ScenarioRepository;
@@ -22,7 +21,7 @@ public class SnapshotHandler {
     SensorRepository sensorRepository;
     ScenarioConditionRepository scenarioConditionRepository;
     ScenarioActionRepository scenarioActionRepository;
-    HubRouterProcessor hubRouterProcessor;
+    //HubRouterProcessor hubRouterProcessor; используется локально для проверки результата
 
     public void accept(SensorsSnapshotAvro snapshot) {
         Map<String, SensorStateAvro> sensorsState = snapshot.getSensorsState();
@@ -32,7 +31,7 @@ public class SnapshotHandler {
                 SensorStateAvro sensorStateAvro = sensorsState.get(sensorId);
                 ScenarioAction action = scenarioActionRepository.findBySensorAndScenario(sensor, scenario);
                 if (isConditionTriggered(condition, sensorStateAvro)) {
-                    hubRouterProcessor.executeAction(action.getAction(), snapshot.getHubId(), scenario, sensor);
+                    //hubRouterProcessor.executeAction(action.getAction(), snapshot.getHubId(), scenario, sensor);
                 }
             });
         }));

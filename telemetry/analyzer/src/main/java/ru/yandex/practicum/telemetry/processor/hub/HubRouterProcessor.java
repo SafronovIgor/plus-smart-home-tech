@@ -6,7 +6,6 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 import ru.yandex.practicum.grpc.telemetry.event.ActionTypeProto;
 import ru.yandex.practicum.grpc.telemetry.event.DeviceActionProto;
 import ru.yandex.practicum.grpc.telemetry.event.DeviceActionRequest;
@@ -16,7 +15,7 @@ import ru.yandex.practicum.telemetry.entity.Scenario;
 import ru.yandex.practicum.telemetry.entity.Sensor;
 
 @Slf4j
-@Service
+//@Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class HubRouterProcessor {
     HubRouterControllerGrpc.HubRouterControllerBlockingStub hubRouterClient;
