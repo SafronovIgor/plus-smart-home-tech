@@ -8,9 +8,9 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import ru.yandex.practicum.feign.ShoppingStoreClient;
 
 @SpringBootApplication
+@EnableDiscoveryClient
 @ConfigurationPropertiesScan
 @EnableFeignClients(clients = {ShoppingStoreClient.class})
-@EnableDiscoveryClient
 public class Warehouse {
     public static void main(String[] args) {
         SpringApplication.run(Warehouse.class, args);
