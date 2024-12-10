@@ -140,10 +140,13 @@ public class WarehouseServiceImpl implements WarehouseService {
     }
 
     private Map<UUID, WarehouseProduct> findWarehouseProducts(Map<String, Long> products) {
-        return warehouseProductRepository.findAllByProductIdIn(
-                        products.keySet().stream().map(UUID::fromString).toList())
-                .stream().collect(Collectors.toMap(WarehouseProduct::getProductId,
-                        product -> product));
+        List<UUID> productIds = products.keySet()
+                .stream()
+                .map(UUID::fromString)
+                .toList();
+        List<WarehouseProduct> warehouseProducts = warehouseProductRepository.findAllByProductIdIn(productIds);
+        return warehouseProducts.stream()
+                .collect(Collectors.toMap(WarehouseProduct::getProductId, product -> product));
     }
 
     private void validateProductsAvailability(Map<UUID, WarehouseProduct> currentProducts, Map<String, Long> products) {
