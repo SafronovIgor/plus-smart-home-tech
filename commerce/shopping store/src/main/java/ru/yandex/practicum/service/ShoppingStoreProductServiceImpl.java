@@ -28,8 +28,8 @@ public class ShoppingStoreProductServiceImpl implements ShoppingStoreProductServ
 
     @Override
     public List<ProductDto> getAll(ProductCategory category, Pageable pageable) {
-
-        return shoppingStoreProductRepository.findByProductCategory(category, pageable).stream()
+        return shoppingStoreProductRepository.findByProductCategory(category, pageable)
+                .stream()
                 .map(shoppingStoreProductMapper::toProductDto)
                 .toList();
     }

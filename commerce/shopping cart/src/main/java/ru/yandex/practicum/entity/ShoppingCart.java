@@ -15,7 +15,7 @@ import java.util.UUID;
 @Setter
 @ToString
 @Builder
-@RequiredArgsConstructor
+@NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "shopping_carts")
 @EqualsAndHashCode(of = "shoppingCartId")
@@ -24,12 +24,12 @@ public class ShoppingCart {
 
     @Id
     @UuidGenerator
-    @Column(name = "shopping_cart_id", nullable = false)
+    @Column(name = "shopping_cart_id")
     UUID shoppingCartId;
 
-    @Column(name = "username", nullable = false)
+    @Column(name = "username")
     String username;
 
-    @Column(name = "activated", nullable = false)
+    @Column(name = "activated")
     boolean activated;
 }
