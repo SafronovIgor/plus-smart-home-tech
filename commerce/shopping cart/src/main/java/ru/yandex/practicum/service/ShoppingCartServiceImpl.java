@@ -40,11 +40,12 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Transactional(readOnly = true)
     public ShoppingCartDto get(String username) {
         checkUsernameForEmpty(username);
+
         ShoppingCart shoppingCart = cartRepository.findByUsernameIgnoreCaseAndActivated(username, true)
                 .orElseThrow(() -> new NotAuthorizedUserException("No cart for username: " + username));
 
         List<ShoppingCartProduct> cartProductList =
-                cartProductsRepository.findAllByCartProductId_ShoppingCartId(shoppingCart.getShoppingCartId());
+                cartProductsRepository.findAllByCartProductIdShoppingCartId(shoppingCart.getShoppingCartId());
 
         return cartMapper.toShoppingCartDto(shoppingCart, cartProductList);
     }
@@ -52,6 +53,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     public ShoppingCartDto addProducts(String username, Map<String, Long> products) {
         checkUsernameForEmpty(username);
+
         UUID cartId = cartRepository.findByUsernameIgnoreCaseAndActivated(username, true)
                 .map(ShoppingCart::getShoppingCartId)
                 .orElseGet(() -> {
@@ -59,7 +61,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                             .username(username)
                             .activated(true)
                             .build();
-                    return cartRepository.save(newCart).getShoppingCartId();
+                    cartRepository.save(newCart);
+                    return newCart.getShoppingCartId();
                 });
 
         List<ShoppingCartProduct> newCartProducts = mapToCartProducts(cartId, products);
@@ -71,6 +74,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     public void deactivate(String username) {
         checkUsernameForEmpty(username);
+
         ShoppingCart shoppingCart = cartRepository.findByUsernameIgnoreCaseAndActivated(username, true)
                 .orElseThrow(() -> new NotAuthorizedUserException("No cart for username: " + username));
 
@@ -80,6 +84,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     public ShoppingCartDto update(String username, Map<String, Long> products) {
         checkUsernameForEmpty(username);
+
         ShoppingCartDto currentShoppingCart = self.get(username);
         UUID cartId = UUID.fromString(currentShoppingCart.shoppingCartId());
 
@@ -109,7 +114,6 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
         log.info("Current quantity of product {} for user {}: {}", productId, username, cartProduct.getQuantity());
         cartProduct.setQuantity(request.newQuantity());
-        cartProductsRepository.save(cartProduct);
 
         log.info("Updated cart for user {}: {}", username, self.get(username));
         return self.get(username);
@@ -126,12 +130,13 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ShoppingCartDto getById(String cartId) {
         ShoppingCart shoppingCart = cartRepository.findById(UUID.fromString(cartId))
                 .orElseThrow(() -> new NotFoundException("Cart with id " + cartId + " not found"));
 
         List<ShoppingCartProduct> cartProductList =
-                cartProductsRepository.findAllByCartProductId_ShoppingCartId(UUID.fromString(cartId));
+                cartProductsRepository.findAllByCartProductIdShoppingCartId(UUID.fromString(cartId));
 
         return cartMapper.toShoppingCartDto(shoppingCart, cartProductList);
     }
@@ -145,7 +150,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private List<ShoppingCartProduct> mapToCartProducts(UUID cartId, Map<String, Long> products) {
         return products.entrySet().stream()
                 .map(entry -> new ShoppingCartProduct(
-                        new ShoppingCartProductId(cartId, UUID.fromString(entry.getKey())), entry.getValue())
+                        new ShoppingCartProductId(cartId, UUID.fromString(entry.getKey())),
+                        entry.getValue())
                 )
                 .collect(Collectors.toList());
     }

@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.dto.ProductDto;
 import ru.yandex.practicum.dto.SetProductQuantityStateRequest;
 import ru.yandex.practicum.entity.ShoppingStoreProduct;
@@ -20,6 +21,7 @@ import java.util.List;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ShoppingStoreProductServiceImpl implements ShoppingStoreProductService {
@@ -62,8 +64,7 @@ public class ShoppingStoreProductServiceImpl implements ShoppingStoreProductServ
                         "Product with id " + productDto.productId() + " not found"));
         shoppingStoreProductRepository.deleteById(productDto.productId());
         ShoppingStoreProduct shoppingStoreProductSaved = shoppingStoreProductRepository.save(
-                shoppingStoreProductMapper.toProduct(productDto)
-        );
+                shoppingStoreProductMapper.toProduct(productDto));
         return shoppingStoreProductMapper.toProductDto(shoppingStoreProductSaved);
     }
 
@@ -79,7 +80,7 @@ public class ShoppingStoreProductServiceImpl implements ShoppingStoreProductServ
                         "Product with id " + stateRequest.productId() + " not found"));
         try {
             log.info("Changing state for product: {}", stateRequest.productId());
-            shoppingStoreProductRepository.save(shoppingStoreProductInDb);
+            shoppingStoreProductInDb.setQuantityState(stateRequest.quantityState());
             return true;
         } catch (DataAccessException e) {
             log.error("Failed to change state for product: {}", stateRequest.productId(), e);

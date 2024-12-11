@@ -1,4 +1,4 @@
-package ru.yandex.practicum.сontroller;
+package ru.yandex.practicum.controller;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -23,44 +23,37 @@ public class ShoppingStoreController {
 
     @GetMapping
     public List<ProductDto> getAllProducts(@RequestParam ProductCategory category, Pageable pageable) {
-        List<ProductDto> receivedList = shoppingStoreProductService.getAll(category, pageable);
-        log.info("Received product list with size {}", receivedList.size());
-        return receivedList;
+        log.info("Fetching products with category: {}, pageable: {}", category, pageable);
+        return shoppingStoreProductService.getAll(category, pageable);
     }
 
     @PutMapping
     public ProductDto createProduct(@RequestBody ProductDto productDto) {
-        ProductDto savedProductDto = shoppingStoreProductService.create(productDto);
-        log.info("Created product {}", productDto);
-        return savedProductDto;
+        log.info("Creating product: {}", productDto);
+        return shoppingStoreProductService.create(productDto);
     }
 
     @PostMapping
     public ProductDto updateProduct(@RequestBody ProductDto productDto) {
-        ProductDto updatedProductDto = shoppingStoreProductService.update(productDto);
-        log.info("Updated product {}", productDto);
-        return updatedProductDto;
+        log.info("Updating product: {}", productDto);
+        return shoppingStoreProductService.update(productDto);
     }
 
     @PostMapping("/removeProductFromStore")
     public boolean removeProduct(@RequestParam String productId) {
-        var isProductDeleted = shoppingStoreProductService.isDeleted(productId);
-        log.info("Is product removed: {}", isProductDeleted);
-        return isProductDeleted;
+        log.info("Removing product with ID: {}", productId);
+        return shoppingStoreProductService.isDeleted(productId);
     }
 
     @PostMapping("/quantityState")
-    public boolean changeProductState(@RequestParam SetProductQuantityStateRequest stateRequest) {
-        var isProductChangeState = shoppingStoreProductService.changeState(stateRequest);
-        log.info("Is product change state {}", isProductChangeState);
-        return isProductChangeState;
+    public boolean changeProductState(@RequestBody SetProductQuantityStateRequest stateRequest) {
+        log.info("Changing quantity state for product with request: {}", stateRequest);
+        return shoppingStoreProductService.changeState(stateRequest);
     }
-
 
     @GetMapping("/{productId}")
     public ProductDto getProduct(@PathVariable String productId) {
-        ProductDto receivedProductDto = shoppingStoreProductService.get(productId);
-        log.info("Retrieved product with productId: {}", productId);
-        return receivedProductDto;
+        log.info("Fetching product with ID: {}", productId);
+        return shoppingStoreProductService.get(productId);
     }
 }
