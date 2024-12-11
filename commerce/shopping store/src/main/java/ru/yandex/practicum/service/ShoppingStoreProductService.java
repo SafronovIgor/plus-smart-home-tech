@@ -20,5 +20,4 @@ public interface ShoppingStoreProductService {
     boolean isDeleted(String productId);
 
     boolean changeState(SetProductQuantityStateRequest stateRequest);
-
 }

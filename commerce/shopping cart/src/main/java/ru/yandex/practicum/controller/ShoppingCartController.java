@@ -19,17 +19,15 @@ public class ShoppingCartController {
 
     @GetMapping
     public ShoppingCartDto get(@RequestParam String username) {
-        ShoppingCartDto shoppingCart = cartService.get(username);
         log.info("Retrieved shopping cart for user: {}", username);
-        return shoppingCart;
+        return cartService.get(username);
     }
 
     @PutMapping
     public ShoppingCartDto addNewProductsToCart(@RequestParam String username,
                                                 @RequestBody Map<String, Long> products) {
-        ShoppingCartDto shoppingCart = cartService.addProducts(username, products);
         log.info("Added products to shopping cart for user: {}", username);
-        return shoppingCart;
+        return cartService.addProducts(username, products);
     }
 
     @DeleteMapping
@@ -39,32 +37,27 @@ public class ShoppingCartController {
     }
 
     @PostMapping("/remove")
-    public ShoppingCartDto updateCart(@RequestParam String username,
-                                      @RequestBody Map<String, Long> products) {
-        ShoppingCartDto shoppingCart = cartService.update(username, products);
+    public ShoppingCartDto updateCart(@RequestParam String username, @RequestBody Map<String, Long> products) {
         log.info("Updated cart for user: {}", username);
-        return shoppingCart;
+        return cartService.update(username, products);
     }
 
     @PostMapping("/change-quantity")
     public ShoppingCartDto changeQuantityOfProduct(@RequestParam String username,
                                                    @RequestBody ChangeProductQuantityRequest request) {
-        ShoppingCartDto shoppingCart = cartService.changeProductQuantity(username, request);
         log.info("Changed product quantity for user: {}", username);
-        return shoppingCart;
+        return cartService.changeProductQuantity(username, request);
     }
 
     @PostMapping("/booking")
     public BookedProductsDto book(@RequestParam String username) {
-        BookedProductsDto bookedProducts = cartService.book(username);
         log.info("Booked cart for user: {}", username);
-        return bookedProducts;
+        return cartService.book(username);
     }
 
     @GetMapping("/{cartId}")
     public ShoppingCartDto getShoppingCartById(@PathVariable String cartId) {
-        ShoppingCartDto shoppingCart = cartService.getById(cartId);
         log.info("Retrieved cart by ID: {}", cartId);
-        return shoppingCart;
+        return cartService.getById(cartId);
     }
 }

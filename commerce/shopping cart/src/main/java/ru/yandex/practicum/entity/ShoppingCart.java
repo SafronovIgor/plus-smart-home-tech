@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.UuidGenerator;
@@ -24,12 +25,13 @@ public class ShoppingCart {
 
     @Id
     @UuidGenerator
-    @Column(name = "shopping_cart_id", nullable = false)
+    @Column(name = "shopping_cart_id")
     UUID shoppingCartId;
 
-    @Column(name = "username", nullable = false)
+    @NotBlank
+    @Column(name = "username")
     String username;
 
-    @Column(name = "activated", nullable = false)
+    @Column(name = "activated")
     boolean activated;
 }
