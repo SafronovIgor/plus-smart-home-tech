@@ -16,7 +16,7 @@ import java.util.UUID;
 @Setter
 @ToString
 @Builder
-@RequiredArgsConstructor
+@NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "shopping_carts")
 @EqualsAndHashCode(of = "shoppingCartId")
