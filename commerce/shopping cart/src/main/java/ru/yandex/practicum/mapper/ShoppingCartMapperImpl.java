@@ -16,20 +16,20 @@ public class ShoppingCartMapperImpl implements ShoppingCartMapper {
     @Override
     public ShoppingCart toShoppingCart(ShoppingCartDto shoppingCartDto, String username) {
         return ShoppingCart.builder()
-                .shoppingCartId(UUID.fromString(shoppingCartDto.shoppingCartId()))
+                .shoppingCartId(shoppingCartDto.shoppingCartId())
                 .username(username)
                 .build();
     }
 
     @Override
     public ShoppingCartDto toShoppingCartDto(ShoppingCart shoppingCart, List<ShoppingCartProduct> products) {
-        Map<String, Long> productsMap = products.stream()
+        Map<UUID, Long> productsMap = products.stream()
                 .collect(Collectors.toMap(cartProduct ->
-                        cartProduct.getCartProductId().getProductId().toString(), ShoppingCartProduct::getQuantity)
+                        cartProduct.getCartProductId().getProductId(), ShoppingCartProduct::getQuantity)
                 );
 
         return ShoppingCartDto.builder()
-                .shoppingCartId(shoppingCart.getShoppingCartId().toString())
+                .shoppingCartId(UUID.fromString(shoppingCart.getShoppingCartId().toString()))
                 .products(productsMap)
                 .build();
     }

@@ -56,7 +56,7 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     @Override
     @Transactional
-    public void returnProducts(Map<String, Long> products) {
+    public void returnProducts(Map<UUID, Long> products) {
         Map<UUID, WarehouseProduct> productMap = findWarehouseProducts(products);
 
         productMap.forEach((productId, product) ->
@@ -139,19 +139,18 @@ public class WarehouseServiceImpl implements WarehouseService {
         }
     }
 
-    private Map<UUID, WarehouseProduct> findWarehouseProducts(Map<String, Long> products) {
+    private Map<UUID, WarehouseProduct> findWarehouseProducts(Map<UUID, Long> products) {
         List<UUID> productIds = products.keySet()
                 .stream()
-                .map(UUID::fromString)
                 .toList();
         List<WarehouseProduct> warehouseProducts = warehouseProductRepository.findAllByProductIdIn(productIds);
         return warehouseProducts.stream()
                 .collect(Collectors.toMap(WarehouseProduct::getProductId, product -> product));
     }
 
-    private void validateProductsAvailability(Map<UUID, WarehouseProduct> currentProducts, Map<String, Long> products) {
+    private void validateProductsAvailability(Map<UUID, WarehouseProduct> currentProducts, Map<UUID, Long> products) {
         products.forEach((id, qty) -> {
-            UUID uuid = UUID.fromString(id);
+            UUID uuid = id;
             WarehouseProduct product = currentProducts.get(uuid);
             if (product == null || product.getQuantity() < qty) {
                 throw new ProductInShoppingCartLowQuantityInWarehouse("Not enough products in warehouse");
@@ -159,10 +158,10 @@ public class WarehouseServiceImpl implements WarehouseService {
         });
     }
 
-    private ReservedProduct reserveProduct(String cartId, Map.Entry<String, Long> entry) {
+    private ReservedProduct reserveProduct(UUID cartId, Map.Entry<UUID, Long> entry) {
         return ReservedProduct.builder()
-                .shoppingCartId(UUID.fromString(cartId))
-                .productId(UUID.fromString(entry.getKey()))
+                .shoppingCartId(cartId)
+                .productId(entry.getKey())
                 .reservedQuantity(entry.getValue())
                 .build();
     }

@@ -9,6 +9,7 @@ import ru.yandex.practicum.dto.*;
 import ru.yandex.practicum.service.WarehouseService;
 
 import java.util.Map;
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -25,7 +26,7 @@ public class WarehouseController {
     }
 
     @PostMapping("/return")
-    public void returnProducts(Map<String, Long> products) {
+    public void returnProducts(Map<UUID, Long> products) {
         log.info("==> POST /api/v1/warehouse/return. Returning products: {}", products);
         warehouseService.returnProducts(products);
     }

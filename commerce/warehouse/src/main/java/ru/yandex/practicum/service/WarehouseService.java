@@ -3,12 +3,13 @@ package ru.yandex.practicum.service;
 import ru.yandex.practicum.dto.*;
 
 import java.util.Map;
+import java.util.UUID;
 
 public interface WarehouseService {
 
     void addNewProduct(NewProductInWarehouseRequest newProduct);
 
-    void returnProducts(Map<String, Long> products);
+    void returnProducts(Map<UUID, Long> products);
 
     BookedProductsDto bookProducts(ShoppingCartDto shoppingCart);
 
