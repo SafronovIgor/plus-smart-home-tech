@@ -9,6 +9,7 @@ import ru.yandex.practicum.dto.ShoppingCartDto;
 import ru.yandex.practicum.service.ShoppingCartService;
 
 import java.util.Map;
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -25,7 +26,7 @@ public class ShoppingCartController {
 
     @PutMapping
     public ShoppingCartDto addNewProductsToCart(@RequestParam String username,
-                                                @RequestBody Map<String, Long> products) {
+                                                @RequestBody Map<UUID, Long> products) {
         log.info("Added products to shopping cart for user: {}", username);
         return cartService.addProducts(username, products);
     }
@@ -37,7 +38,7 @@ public class ShoppingCartController {
     }
 
     @PostMapping("/remove")
-    public ShoppingCartDto updateCart(@RequestParam String username, @RequestBody Map<String, Long> products) {
+    public ShoppingCartDto updateCart(@RequestParam String username, @RequestBody Map<UUID, Long> products) {
         log.info("Updated cart for user: {}", username);
         return cartService.update(username, products);
     }

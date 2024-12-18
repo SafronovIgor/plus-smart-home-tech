@@ -51,7 +51,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
-    public ShoppingCartDto addProducts(String username, Map<String, Long> products) {
+    public ShoppingCartDto addProducts(String username, Map<UUID, Long> products) {
         checkUsernameForEmpty(username);
 
         UUID cartId = cartRepository.findByUsernameIgnoreCaseAndActivated(username, true)
@@ -82,11 +82,11 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
-    public ShoppingCartDto update(String username, Map<String, Long> products) {
+    public ShoppingCartDto update(String username, Map<UUID, Long> products) {
         checkUsernameForEmpty(username);
 
         ShoppingCartDto currentShoppingCart = self.get(username);
-        UUID cartId = UUID.fromString(currentShoppingCart.shoppingCartId());
+        UUID cartId = currentShoppingCart.shoppingCartId();
 
         List<ShoppingCartProduct> currentCartProducts = mapToCartProducts(cartId, currentShoppingCart.products());
         cartProductsRepository.deleteAll(currentCartProducts);
@@ -104,7 +104,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         log.info("Attempting to change product quantity for user: {}", username);
 
         ShoppingCartDto currentShoppingCart = self.get(username);
-        UUID cartId = UUID.fromString(currentShoppingCart.shoppingCartId());
+        UUID cartId = currentShoppingCart.shoppingCartId();
 
         ShoppingCartProductId productId = new ShoppingCartProductId(cartId, UUID.fromString(request.productId()));
         ShoppingCartProduct cartProduct = cartProductsRepository.findById(productId)
@@ -122,7 +122,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     public BookedProductsDto book(String username) {
         try {
-            return warehouseClient.bookProducts(self.get(username));
+            return warehouseClient.checkForProductsSufficiency(self.get(username));
         } catch (Exception e) {
             log.error("Error booking cart for user: {}", username, e);
             throw new RuntimeException("Failed to book products for username: " + username, e);
@@ -147,10 +147,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         }
     }
 
-    private List<ShoppingCartProduct> mapToCartProducts(UUID cartId, Map<String, Long> products) {
+    private List<ShoppingCartProduct> mapToCartProducts(UUID cartId, Map<UUID, Long> products) {
         return products.entrySet().stream()
                 .map(entry -> new ShoppingCartProduct(
-                        new ShoppingCartProductId(cartId, UUID.fromString(entry.getKey())),
+                        new ShoppingCartProductId(cartId, entry.getKey()),
                         entry.getValue())
                 )
                 .collect(Collectors.toList());
