@@ -62,7 +62,6 @@ public class WarehouseServiceImpl implements WarehouseService {
         productMap.forEach((productId, product) ->
                 product.setQuantity(product.getQuantity() + products.get(productId.toString())));
 
-        warehouseProductRepository.saveAll(productMap.values());
         log.info("Returned products: {}", products.keySet());
     }
 
@@ -71,12 +70,67 @@ public class WarehouseServiceImpl implements WarehouseService {
     public BookedProductsDto bookProducts(ShoppingCartDto shoppingCart) {
         Map<UUID, WarehouseProduct> currentProducts = findWarehouseProducts(shoppingCart.products());
         validateProductsAvailability(currentProducts, shoppingCart.products());
+
         List<ReservedProduct> reservedProductsList = shoppingCart.products().entrySet().stream()
                 .map(entry -> reserveProduct(shoppingCart.shoppingCartId(), entry))
                 .toList();
+
         reservedProductsRepository.saveAll(reservedProductsList);
         updateShoppingStoreStates(reservedProductsList);
+
         return bookedProductsMapper.toBookedProductsDto(reservedProductsList, currentProducts);
+    }
+
+    @Override
+    @Transactional
+    public BookedProductsDto assemblyProductsForOrder(AssemblyProductForOrderFromShoppingCartRequest assembly) {
+        List<ReservedProduct> reservedProducts = reservedProductsRepository.findAllByShoppingCartId(
+                UUID.fromString(assembly.shoppingCartId()));
+
+        Map<UUID, WarehouseProduct> warehouseProductMap = warehouseProductRepository.findAllByProductIdIn(
+                        reservedProducts.stream().map(ReservedProduct::getReservedProductId).toList())
+                .stream()
+                .collect(Collectors.toMap(WarehouseProduct::getProductId, product -> product));
+
+        reservedProducts.forEach(reservedProduct -> adjustProductQuantity(reservedProduct, warehouseProductMap));
+
+        return bookedProductsMapper.toBookedProductsDto(reservedProducts, warehouseProductMap);
+    }
+
+    private void adjustProductQuantity(ReservedProduct reservedProduct,
+                                       Map<UUID, WarehouseProduct> warehouseProductMap) {
+        UUID reservedProductId = reservedProduct.getReservedProductId();
+        WarehouseProduct product = warehouseProductMap.get(reservedProductId);
+        product.setQuantity(product.getQuantity() - reservedProduct.getReservedQuantity());
+    }
+
+    @Override
+    @Transactional
+    public void addingProductsQuantity(AddProductToWarehouseRequest addingProductsQuantity) {
+        WarehouseProduct warehouseProduct = findWarehouseProduct(addingProductsQuantity.productId());
+        warehouseProduct.setQuantity(warehouseProduct.getQuantity() + addingProductsQuantity.quantity());
+
+        shoppingStoreClient.changeProductState(
+                new SetProductQuantityStateRequest(
+                        warehouseProduct.getProductId().toString(),
+                        specifyQuantityState(warehouseProduct.getQuantity())));
+
+        log.info("Added product with id: {}, by quantity {}. New quantity: {}",
+                addingProductsQuantity.productId(),
+                addingProductsQuantity.quantity(),
+                warehouseProduct.getQuantity());
+    }
+
+    @Override
+    public AddressDto getWarehouseAddress() {
+        WarehouseAddress warehouseAddress = new WarehouseAddress();
+        return AddressDto.builder()
+                .country(warehouseAddress.getCountry())
+                .city(warehouseAddress.getCity())
+                .street(warehouseAddress.getStreet())
+                .house(warehouseAddress.getHouse())
+                .flat(warehouseAddress.getFlat())
+                .build();
     }
 
     private void validateProductAbsence(String productId) {
@@ -120,62 +174,10 @@ public class WarehouseServiceImpl implements WarehouseService {
                         specifyQuantityState(reservedProduct.getReservedQuantity()))));
     }
 
-    @Override
-    @Transactional
-    public BookedProductsDto assemblyProductsForOrder(AssemblyProductForOrderFromShoppingCartRequest assembly) {
-        List<ReservedProduct> reservedProducts = reservedProductsRepository.findAllByShoppingCartId(
-                UUID.fromString(assembly.shoppingCartId()));
-        Map<UUID, WarehouseProduct> warehouseProductMap = warehouseProductRepository.findAllByProductIdIn(
-                        reservedProducts.stream().map(ReservedProduct::getReservedProductId).toList())
-                .stream()
-                .collect(Collectors.toMap(WarehouseProduct::getProductId, product -> product));
-        reservedProducts.forEach(reservedProduct -> adjustProductQuantity(reservedProduct,
-                warehouseProductMap));
-        warehouseProductRepository.saveAll(warehouseProductMap.values());
-        return bookedProductsMapper.toBookedProductsDto(reservedProducts, warehouseProductMap);
-    }
-
-    private void adjustProductQuantity(ReservedProduct reservedProduct,
-                                       Map<UUID, WarehouseProduct> warehouseProductMap) {
-        UUID reservedProductId = reservedProduct.getReservedProductId();
-        WarehouseProduct product = warehouseProductMap.get(reservedProductId);
-        product.setQuantity(product.getQuantity() - reservedProduct.getReservedQuantity());
-    }
-
-    @Override
-    @Transactional
-    public void addingProductsQuantity(AddProductToWarehouseRequest addingProductsQuantity) {
-        WarehouseProduct warehouseProduct = findWarehouseProduct(addingProductsQuantity.productId());
-        warehouseProduct.setQuantity(warehouseProduct.getQuantity() + addingProductsQuantity.quantity());
-        warehouseProductRepository.save(warehouseProduct);
-
-        shoppingStoreClient.changeProductState(
-                new SetProductQuantityStateRequest(
-                        warehouseProduct.getProductId().toString(),
-                        specifyQuantityState(warehouseProduct.getQuantity())));
-
-        log.info("Added product with id: {}, by quantity {}. New quantity: {}",
-                addingProductsQuantity.productId(),
-                addingProductsQuantity.quantity(),
-                warehouseProduct.getQuantity());
-    }
-
     private WarehouseProduct findWarehouseProduct(String productId) {
         return warehouseProductRepository.findByProductId(UUID.fromString(productId))
                 .orElseThrow(() -> new ProductNotFoundException(
                         "Product with id: " + productId + " not found in warehouse"));
-    }
-
-    @Override
-    public AddressDto getWarehouseAddress() {
-        WarehouseAddress warehouseAddress = new WarehouseAddress();
-        return AddressDto.builder()
-                .country(warehouseAddress.getCountry())
-                .city(warehouseAddress.getCity())
-                .street(warehouseAddress.getStreet())
-                .house(warehouseAddress.getHouse())
-                .flat(warehouseAddress.getFlat())
-                .build();
     }
 
     private QuantityState specifyQuantityState(long quantity) {

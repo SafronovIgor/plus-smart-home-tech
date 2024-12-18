@@ -4,7 +4,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.UuidGenerator;
@@ -18,20 +17,22 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "shopping_carts")
-@EqualsAndHashCode(of = "shoppingCartId")
+@Table(name = "dimensions")
+@EqualsAndHashCode(of = "dimensionId")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ShoppingCart {
+public class Dimension {
 
     @Id
     @UuidGenerator
-    @Column(name = "shopping_cart_id")
-    UUID shoppingCartId;
+    @Column(name = "dimension_id")
+    UUID dimensionId;
 
-    @NotBlank
-    @Column(name = "username")
-    String username;
+    @Column(name = "width")
+    double width;
 
-    @Column(name = "activated")
-    boolean activated;
+    @Column(name = "height")
+    double height;
+
+    @Column(name = "depth")
+    double depth;
 }

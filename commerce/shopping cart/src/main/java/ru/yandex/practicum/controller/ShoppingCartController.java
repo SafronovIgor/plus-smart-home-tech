@@ -26,9 +26,8 @@ public class ShoppingCartController {
     @PutMapping
     public ShoppingCartDto addNewProductsToCart(@RequestParam String username,
                                                 @RequestBody Map<String, Long> products) {
-        ShoppingCartDto shoppingCart = cartService.addProducts(username, products);
         log.info("Added products to shopping cart for user: {}", username);
-        return shoppingCart;
+        return cartService.addProducts(username, products);
     }
 
     @DeleteMapping
@@ -38,8 +37,7 @@ public class ShoppingCartController {
     }
 
     @PostMapping("/remove")
-    public ShoppingCartDto updateCart(@RequestParam String username,
-                                      @RequestBody Map<String, Long> products) {
+    public ShoppingCartDto updateCart(@RequestParam String username, @RequestBody Map<String, Long> products) {
         log.info("Updated cart for user: {}", username);
         return cartService.update(username, products);
     }

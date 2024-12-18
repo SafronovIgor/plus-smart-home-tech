@@ -1,11 +1,12 @@
-jpa:
-  hibernate:
-    ddl-auto: none
-  properties:
+spring:
+  jpa:
     hibernate:
-      dialect: org.hibernate.dialect.PostgreSQLDialect
-      format_sql: true  # Логирование и форматирование SQL
-  show-sql: true  # Показывать SQL, лучше отключить в продакшене
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true  # Логирование и форматирование SQL
+    show-sql: true  # Показывать SQL, лучше отключить в продакшене
 
   data:
     jdbc:
@@ -41,8 +42,3 @@ analyzer: # Настройки анализатора
       "group.id": aggregator-group
       "key.deserializer": org.apache.kafka.common.serialization.StringDeserializer
       "value.deserializer": kafka.serializer.SensorEventDeserializer
-
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
