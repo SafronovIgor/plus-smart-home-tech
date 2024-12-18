@@ -26,5 +26,4 @@ public interface WarehouseClient {
 
     @PostMapping("/return")
     void returnProducts(Map<UUID, Long> products);
-
 }
