@@ -1,5 +1,6 @@
 package ru.yandex.practicum.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import ru.yandex.practicum.enums.OrderState;
 
@@ -8,8 +9,8 @@ import java.util.UUID;
 
 @Builder
 public record OrderDto(
-        UUID orderId,
-        UUID deliveryId,
+        @NotNull UUID orderId,
+        @NotNull UUID deliveryId,
         Boolean fragile,
         Float totalPrice,
         OrderState state,

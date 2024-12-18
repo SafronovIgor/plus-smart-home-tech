@@ -1,5 +1,7 @@
 package ru.yandex.practicum.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,32 +22,32 @@ public class DeliveryController {
     private final DeliveryService deliveryService;
 
     @PutMapping
-    public DeliveryDto create(DeliveryDto deliveryDto) {
+    public DeliveryDto create(@Valid DeliveryDto deliveryDto) {
         DeliveryDto savedDeliveryDto = deliveryService.create(deliveryDto);
         log.info("Delivery created: input={}, result={}", deliveryDto, savedDeliveryDto);
         return savedDeliveryDto;
     }
 
     @PostMapping("/successful")
-    public void setDeliveryStatusSuccessful(UUID orderId) {
+    public void setDeliveryStatusSuccessful(@NotNull UUID orderId) {
         deliveryService.setSuccessfulToDelivery(orderId);
         log.info("Delivery status update: action=setSuccessful, orderId={}", orderId);
     }
 
     @PostMapping("/picked")
-    public void setDeliveryStatusPicked(UUID orderId) {
+    public void setDeliveryStatusPicked(@NotNull UUID orderId) {
         deliveryService.setPickedToDelivery(orderId);
         log.info("Delivery status update: action=setPicked, orderId={}", orderId);
     }
 
     @PostMapping("/failed")
-    public void setFailedStatusToDelivery(UUID orderId) {
+    public void setFailedStatusToDelivery(@NotNull UUID orderId) {
         deliveryService.setFailedToDelivery(orderId);
         log.info("Delivery status update: action=setFailed, orderId={}", orderId);
     }
 
     @PostMapping("/cost")
-    public Float calculateDeliveryCost(OrderDto orderDto) {
+    public Float calculateDeliveryCost(@Valid OrderDto orderDto) {
         Float calculatedDeliveryCost = deliveryService.calculateDeliveryCost(orderDto);
         log.info("Delivery cost calculation: order={}, cost={}", orderDto, calculatedDeliveryCost);
         return calculatedDeliveryCost;
